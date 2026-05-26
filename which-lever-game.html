@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Which Lever? | ODCE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --turquoise: #00C1D4;
+      --blue: #143AFF;
+      --violet: #7200FE;
+      --mint: #5AFFC5;
+      --red: #FF4F4F;
+      --yellow: #FFDE36;
+      --white: #FFFFFF;
+      --black: #000000;
+      --bg: #F4F7FF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    #app { width: 100%; max-width: 660px; }
+
+    /* ODCE mark */
+    .odce-mark {
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+    }
+    .odce-mark span:first-child { color: var(--turquoise); }
+    .odce-mark span:last-child  { color: var(--blue); }
+
+    /* Screens */
+    .screen {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 32px rgba(20,58,255,0.10);
+      position: relative;
+      overflow: hidden;
+    }
+    .screen-accent {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--turquoise), var(--blue));
+    }
+
+    /* Welcome */
+    .welcome-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .welcome-sub {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .welcome-levers {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .welcome-levers p {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .lever-pill {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 3px 4px 3px 0;
+    }
+    .pill-1 { background: rgba(20,58,255,0.12); color: var(--blue); }
+    .pill-2 { background: rgba(114,0,254,0.12); color: var(--violet); }
+    .pill-3 { background: rgba(0,193,212,0.15); color: #007f8a; }
+
+    label { font-size: 13px; font-weight: 600; color: #333; display: block; margin-bottom: 6px; }
+    input[type="text"] {
+      width: 100%;
+      border: 2px solid #dde3ff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 14px;
+    }
+    input[type="text"]:focus { border-color: var(--blue); }
+    .meta { font-size: 12px; color: #999; margin-top: 12px; text-align: center; }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn--primary {
+      background: var(--blue);
+      color: var(--white);
+    }
+    .btn--primary:hover:not(:disabled) { background: #0a2bcc; transform: translateY(-1px); }
+    .btn--primary:disabled { background: #c0c8f0; cursor: not-allowed; }
+    .btn--secondary {
+      background: var(--bg);
+      color: var(--blue);
+      border: 2px solid var(--blue);
+      margin-top: 10px;
+    }
+    .btn--secondary:hover { background: #e8ecff; }
+
+    /* Progress */
+    .progress-wrap { margin-bottom: 20px; }
+    .progress-label { font-size: 12px; color: #888; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .progress-bar {
+      height: 5px;
+      background: #e0e5ff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--turquoise), var(--blue));
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    /* Scenario */
+    .scenario-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+    .situation {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #333;
+      background: var(--bg);
+      border-left: 4px solid var(--turquoise);
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 22px;
+    }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--white);
+      border: 2px solid #dde3ff;
+      border-radius: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: #222;
+      transition: all 0.18s;
+    }
+    .option-card:hover { border-color: var(--blue); background: #f0f3ff; transform: translateX(3px); }
+    .option-label {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Feedback */
+    .feedback-card {
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .feedback-card--good { background: rgba(90,255,197,0.15); border: 2px solid var(--mint); }
+    .feedback-card--partial { background: rgba(255,222,54,0.15); border: 2px solid var(--yellow); }
+    .feedback-card--bad { background: rgba(255,79,79,0.12); border: 2px solid var(--red); }
+    .points-badge {
+      display: inline-block;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .badge-good { color: #00995a; }
+    .badge-partial { color: #a07800; }
+    .badge-bad { color: var(--red); }
+    .feedback-chosen {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .feedback-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #333;
+    }
+    .score-running {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* Results */
+    .tier-badge {
+      display: inline-block;
+      padding: 5px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      color: #000;
+    }
+    .results-title { font-size: 20px; font-weight: 600; color: #333; margin-bottom: 6px; }
+    .score-big {
+      font-size: 72px;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1;
+    }
+    .score-big span { font-size: 28px; color: #aaa; }
+    .tier-msg { font-size: 14px; color: #555; margin: 14px 0 22px; line-height: 1.5; }
+    .score-input-wrap { margin-bottom: 14px; }
+
+    /* Leaderboard */
+    .leaderboard-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 18px;
+    }
+    .lb-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .lb-table th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      text-align: left;
+      padding: 6px 10px;
+      border-bottom: 2px solid #eee;
+    }
+    .lb-table td { padding: 10px; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+    .lb-table tr:first-child td { color: var(--blue); font-weight: 700; }
+    .rank-medal { font-size: 18px; }
+    .lb-empty { text-align: center; color: #aaa; font-size: 14px; padding: 30px 0; }
+    .highlight-row td { background: rgba(0,193,212,0.08); }
+
+    /* Host panel */
+    .host-banner {
+      background: var(--blue);
+      color: var(--white);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .host-stat { font-size: 28px; font-weight: 700; color: var(--blue); }
+    .host-stat-label { font-size: 12px; color: #888; }
+    .host-actions { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn--sm {
+      padding: 8px 16px;
+      font-size: 13px;
+      width: auto;
+      border-radius: 6px;
+    }
+    .btn--danger { background: var(--red); color: white; border: none; }
+    .btn--teal { background: var(--turquoise); color: white; border: none; }
+
+    /* Geometric background accents */
+    .geo-accent {
+      position: absolute;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ── GAME DATA ────────────────────────────────────────────────────────────────
+const GAME_DATA = {
+  title: "Which Lever?",
+  subtitle: "Read the signal. Identify the manipulation.",
+  institution: "ODCE · TUHH",
+  scenarios: [
+    {
+      id: 1,
+      title: "The Booming Revenue",
+      situation: "NordRetail AG reports 28% revenue growth this year. The CEO celebrates in the annual report. But accounts receivable tripled compared to last year — and operating cash flow dropped by 40%. The auditor flags nothing.",
+      options: [
+        {
+          text: "Lever 1 — Revenue too early: sales booked before cash is collected or obligations are met",
+          points: 3,
+          feedback: "Correct. Revenue ↑ while CFO ↓ is the textbook signal for Lever 1. Receivables piling up means customers haven't paid — or the revenue wasn't real. Always triangulate: if Income Statement and Cash Flow diverge, the Balance Sheet holds the answer."
+        },
+        {
+          text: "Lever 2 — Costs pushed back: expenses are being capitalized to inflate current profit",
+          points: 0,
+          feedback: "Not quite. Lever 2 would show up as rising intangible assets or capitalized costs — not exploding receivables. Receivables + weak CFO point directly to revenue recognition issues (Lever 1)."
+        },
+        {
+          text: "Lever 3 — Assets fabricated: the receivables don't actually exist",
+          points: 1,
+          feedback: "Partially right: fabricated receivables are possible (Lever 3), and can't be ruled out without more investigation. But the primary signal here — revenue rising while CFO falls — points first to Lever 1 (premature revenue recognition). Lever 3 would require additional evidence."
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "The Vanishing R&D Expense",
+      situation: "SoftCore GmbH develops enterprise software. This year, their R&D expense line dropped 45% — yet headcount in the R&D department stayed the same. Meanwhile, a line called 'Capitalized Development Costs' on the balance sheet doubled. Net income is up 22%.",
+      options: [
+        {
+          text: "Lever 1 — Revenue too early: they are booking future license fees as current revenue",
+          points: 0,
+          feedback: "No — revenue recognition isn't the issue here. The giveaway is R&D expense falling while a capitalized cost asset rises. That's an expense deferral — Lever 2."
+        },
+        {
+          text: "Lever 2 — Costs pushed back: R&D spending is being capitalized as an asset instead of expensed",
+          points: 3,
+          feedback: "Correct. IFRS allows capitalization of development costs — but the same headcount with 45% lower expense is suspicious. The cost didn't disappear; it moved to the Balance Sheet. Profit looks better now; the write-down comes later. Classic Lever 2."
+        },
+        {
+          text: "Lever 3 — Assets fabricated: the capitalized costs are invented and don't reflect real work",
+          points: 1,
+          feedback: "Possible — and at the extreme end this becomes Lever 3. But the primary mechanism here is Lever 2: costs moved from the Income Statement to the Balance Sheet. Whether those capitalized assets are real requires deeper investigation. Start with Lever 2."
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: "The Phantom Cash",
+      situation: "PayFast AG is a payments company reporting €2.1 bn in cash held at partner banks in Southeast Asia. Profits have grown 40% over three years. But operating cash flow is only 30% of net income — and the company refinanced short-term debt twice this year. The auditor confirmed the cash based on written statements from the partner banks.",
+      options: [
+        {
+          text: "Lever 1 — Revenue too early: the profits are from fake transactions, not real cash",
+          points: 1,
+          feedback: "Revenue fraud is also at play — but the central issue here is the €2.1 bn cash that is difficult to verify. Written bank confirmations from remote partners were exactly how Wirecard's auditors were deceived. The primary lever is 3: fabricated assets."
+        },
+        {
+          text: "Lever 2 — Costs pushed back: operating expenses are being deferred to make profits look larger",
+          points: 0,
+          feedback: "No signal for Lever 2 here. The red flags — low CFO/NI ratio, high cash with refinancing pressure, unverifiable cash at remote partners — all point to Lever 3: fabricated assets. This is the Wirecard pattern."
+        },
+        {
+          text: "Lever 3 — Assets fabricated: the cash at partner banks may not exist",
+          points: 3,
+          feedback: "Correct — this is the Wirecard pattern. €1.9 bn in cash at Asian escrow accounts simply did not exist. The key signals: CFO/NI ≈ 0.3× (healthy ≥ 0.8×), refinancing pressure despite high reported cash, and unverifiable assets relying on written confirmations alone. Physical/independent verification is required."
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "The Entity Maze",
+      situation: "EnerTrade Corp is an energy trader reporting 35% revenue growth from long-term contracts. Revenue from a 20-year gas supply deal is booked at today's estimated full value. The consolidated balance sheet shows modest debt — but footnote 42 mentions €4 bn in 'contingent obligations' held by off-balance-sheet subsidiaries. The auditor changed 18 months ago.",
+      options: [
+        {
+          text: "Lever 2 — Costs pushed back: they are avoiding write-downs on loss-making contracts",
+          points: 0,
+          feedback: "Not the primary issue here. The red flags point elsewhere: immediate recognition of future contract revenue (Lever 1) and off-balance-sheet debt hiding in subsidiaries (Lever 3). Lever 2 would show up as rising capitalized assets — not €4 bn in footnote liabilities."
+        },
+        {
+          text: "Lever 1 only — Revenue too early: future profits from long-term contracts are booked now",
+          points: 1,
+          feedback: "Lever 1 is definitely present — booking a 20-year contract's value upfront is mark-to-market abuse, exactly as Enron did. But you're missing the other half: the €4 bn in off-balance-sheet obligations is Lever 3 simultaneously. Both levers are active."
+        },
+        {
+          text: "Levers 1 + 3 — Revenue too early AND assets/debt fabricated via off-balance-sheet structures",
+          points: 3,
+          feedback: "Correct — this is the Enron pattern. Lever 1: future profits recognized immediately via mark-to-market on long-term contracts. Lever 3: real debt hidden in off-balance-sheet SPEs, invisible on the consolidated balance sheet. CFO/NI below 0.5× and auditor change are additional red flags. Enron collapsed in 2001 — at the time the largest bankruptcy in US history."
+        }
+      ]
+    }
+  ],
+  scoring: {
+    max: 12,
+    tiers: [
+      { min: 10, label: "Chief Analyst", color: "#5AFFC5", message: "Outstanding. You read the signals correctly and know your three levers cold." },
+      { min: 6,  label: "Sharp Practitioner", color: "#00C1D4", message: "Good instincts. A few signals slipped past — review the feedback and retrace your thinking." },
+      { min: 0,  label: "Keep Digging", color: "#FFDE36", message: "Fraud detection takes practice. Revisit the three levers and try again." }
+    ]
+  }
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+const isHost = new URLSearchParams(window.location.search).has('host');
+const LS_KEY = 'odce_which_lever_scores';
+
+const state = {
+  screen: isHost ? 'host' : 'welcome',
+  scenarioIndex: 0,
+  selectedOption: null,
+  score: 0,
+  nickname: '',
+  answers: []
+};
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
+}
+
+// ── FISHER-YATES SHUFFLE ─────────────────────────────────────────────────────
+function shuffle(arr) {
+  const a = arr.map((item, origIndex) => ({ item, origIndex }));
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ── LEADERBOARD HELPERS ──────────────────────────────────────────────────────
+function getScores() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch { return []; }
+}
+function saveScore(nickname, score) {
+  const scores = getScores();
+  scores.push({ nickname, score, timestamp: new Date().toLocaleTimeString() });
+  scores.sort((a, b) => b.score - a.score);
+  localStorage.setItem(LS_KEY, JSON.stringify(scores));
+}
+
+// ── ODCE MARK ───────────────────────────────────────────────────────────────
+function odceMark() {
+  return `<div class="odce-mark"><span>ODCE</span><span style="color:var(--blue);font-size:9px;margin-left:4px;font-weight:400;letter-spacing:1px;">· TUHH</span></div>`;
+}
+
+// ── SCREENS ──────────────────────────────────────────────────────────────────
+function renderWelcome() {
+  return `
+    <div class="screen">
+      <div class="screen-accent"></div>
+      <svg class="geo-accent" width="200" height="200" style="right:-40px;bottom:-40px;">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#143AFF" stroke-width="40"/>
+      </svg>
+      ${odceMark()}
+      <div class="welcome-title">${GAME_DATA.title}</div>
+      <p class="welcome-sub">${GAME_DATA.subtitle}<br>Four companies. Four suspicious signals. Which lever is being pulled?</p>
+      <div class="welcome-levers">
+        <p>The three levers</p>
+        <span class="lever-pill pill-1">Lever 1 — Revenue too early</span>
+        <span class="lever-pill pill-2">Lever 2 — Costs pushed back</span>
+        <span class="lever-pill pill-3">Lever 3 — Assets fabricated</span>
+      </div>
+      <label for="nickname">Your nickname</label>
+      <input type="text" id="nickname" placeholder="e.g. Alex K." maxlength="24" autocomplete="off">
+      <button id="start-btn" class="btn btn--primary" disabled>Start Game →</button>
+      <p class="meta">4 decisions · ~5 minutes · ODCE · TUHH</p>
+    </div>`;
+}
+
+function renderScenario() {
+  const s = GAME_DATA.scenarios[state.scenarioIndex];
+  const progress = state.scenarioIndex + 1;
+  const total = GAME_DATA.scenarios.length;
+  const shuffled = shuffle(s.options);
+  // Store shuffled order for feedback
+  state._shuffled = shuffled;
+
+  return `
+    <div class="screen">
+      <div class="screen-accent"></div>
+      ${odceMark()}
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Decision ${progress} of ${total}</span>
+          <span>Score: ${state.score}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${(progress/total)*100}%"></div></div>
+      </div>
+      <h2 class="scenario-title">${s.title}</h2>
+      <p class="situation">${s.situation}</p>
+      <div class="options">
+        ${shuffled.map((o, i) => `
+          <button class="option-card" data-shuffled="${i}" data-orig="${o.origIndex}">
+            <span class="option-label">${String.fromCharCode(65+i)}</span>
+            <span>${o.item.text}</span>
+          </button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderFeedback() {
+  const s = GAME_DATA.scenarios[state.scenarioIndex];
+  const chosen = s.options[state.selectedOption];
+  const isLast = state.scenarioIndex >= GAME_DATA.scenarios.length - 1;
+  const cls = chosen.points === 3 ? 'good' : chosen.points === 1 ? 'partial' : 'bad';
+  const badgeClass = chosen.points === 3 ? 'badge-good' : chosen.points === 1 ? 'badge-partial' : 'badge-bad';
+  const emoji = chosen.points === 3 ? '✓' : chosen.points === 1 ? '~' : '✗';
+
+  return `
+    <div class="screen">
+      <div class="screen-accent"></div>
+      ${odceMark()}
+      <div class="feedback-card feedback-card--${cls}">
+        <div class="points-badge ${badgeClass}">${emoji} +${chosen.points} point${chosen.points !== 1 ? 's' : ''}</div>
+        <div class="feedback-chosen">You chose: ${chosen.text}</div>
+        <p class="feedback-text">${chosen.feedback}</p>
+        <div class="score-running">Running total: <strong>${state.score} / ${(state.scenarioIndex + 1) * 3}</strong></div>
+      </div>
+      <button id="next-btn" class="btn btn--primary">${isLast ? 'See Results →' : 'Next Decision →'}</button>
+    </div>`;
+}
+
+function renderResults() {
+  const max = GAME_DATA.scoring.max;
+  const tier = GAME_DATA.scoring.tiers.find(t => state.score >= t.min);
+  return `
+    <div class="screen">
+      <div class="screen-accent"></div>
+      ${odceMark()}
+      <div style="text-align:center;margin-bottom:20px;">
+        <div class="tier-badge" style="background:${tier.color}">${tier.label}</div>
+        <div class="results-title">${state.nickname}, you scored</div>
+        <div class="score-big">${state.score}<span> / ${max}</span></div>
+        <p class="tier-msg">${tier.message}</p>
+      </div>
+      <div class="score-input-wrap">
+        <button id="submit-lb" class="btn btn--primary">Submit to Leaderboard</button>
+        <button id="view-lb" class="btn btn--secondary">View Leaderboard</button>
+      </div>
+    </div>`;
+}
+
+function renderLeaderboard() {
+  const scores = getScores();
+  const medals = ['🥇','🥈','🥉'];
+  const myNick = state.nickname;
+
+  const rows = scores.length > 0
+    ? scores.slice(0, 20).map((s, i) => `
+        <tr class="${s.nickname === myNick ? 'highlight-row' : ''}">
+          <td>${medals[i] || `<span class="rank-medal">${i+1}</span>`}</td>
+          <td><strong>${s.nickname}</strong></td>
+          <td style="text-align:right;font-weight:700;color:var(--blue)">${s.score} / 12</td>
+          <td style="text-align:right;color:#aaa;font-size:12px">${s.timestamp}</td>
+        </tr>`).join('')
+    : `<tr><td colspan="4" class="lb-empty">No scores yet.</td></tr>`;
+
+  return `
+    <div class="screen">
+      <div class="screen-accent"></div>
+      ${odceMark()}
+      <div class="leaderboard-title">🏆 Leaderboard</div>
+      <table class="lb-table">
+        <thead><tr><th>#</th><th>Name</th><th style="text-align:right">Score</th><th style="text-align:right">Time</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <button id="play-again" class="btn btn--secondary">Play Again</button>
+    </div>`;
+}
+
+function renderHostPanel() {
+  const scores = getScores();
+  const medals = ['🥇','🥈','🥉'];
+  const avg = scores.length > 0 ? (scores.reduce((s,r) => s+r.score, 0) / scores.length).toFixed(1) : '—';
+
+  const rows = scores.length > 0
+    ? scores.slice(0, 50).map((s, i) => `
+        <tr>
+          <td>${medals[i] || i+1}</td>
+          <td><strong>${s.nickname}</strong></td>
+          <td style="text-align:right;font-weight:700;color:var(--blue)">${s.score} / 12</td>
+          <td style="text-align:right;color:#aaa;font-size:12px">${s.timestamp}</td>
+        </tr>`).join('')
+    : `<tr><td colspan="4" class="lb-empty">No submissions yet.</td></tr>`;
+
+  return `
+    <div class="screen">
+      <div class="screen-accent"></div>
+      ${odceMark()}
+      <div class="host-banner">🎛️ Host Panel — Which Lever? · ODCE</div>
+      <div style="display:flex;gap:24px;margin-bottom:18px;">
+        <div><div class="host-stat">${scores.length}</div><div class="host-stat-label">Submissions</div></div>
+        <div><div class="host-stat">${avg}</div><div class="host-stat-label">Avg. Score</div></div>
+        <div><div class="host-stat">${scores.length > 0 ? scores[0].score : '—'}</div><div class="host-stat-label">Top Score</div></div>
+      </div>
+      <div class="host-actions">
+        <button id="host-reset" class="btn btn--sm btn--danger">Reset Leaderboard</button>
+        <button id="host-export" class="btn btn--sm btn--teal">Export CSV</button>
+        <button id="host-refresh" class="btn btn--sm btn--secondary">↻ Refresh</button>
+      </div>
+      <table class="lb-table">
+        <thead><tr><th>#</th><th>Name</th><th style="text-align:right">Score</th><th style="text-align:right">Time</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p style="font-size:12px;color:#bbb;margin-top:8px;">Student link: share this URL without ?host=true</p>
+    </div>`;
+}
+
+// ── RENDER + LISTENERS ───────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById('app');
+  switch (state.screen) {
+    case 'welcome':     app.innerHTML = renderWelcome(); break;
+    case 'scenario':    app.innerHTML = renderScenario(); break;
+    case 'feedback':    app.innerHTML = renderFeedback(); break;
+    case 'results':     app.innerHTML = renderResults(); break;
+    case 'leaderboard': app.innerHTML = renderLeaderboard(); break;
+    case 'host':        app.innerHTML = renderHostPanel(); break;
+  }
+  attachListeners();
+}
+
+function attachListeners() {
+  // Welcome
+  const nickInput = document.getElementById('nickname');
+  if (nickInput) {
+    nickInput.addEventListener('input', () => {
+      document.getElementById('start-btn').disabled = nickInput.value.trim().length < 2;
+    });
+    nickInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && nickInput.value.trim().length >= 2) startGame(nickInput.value.trim());
+    });
+  }
+  const startBtn = document.getElementById('start-btn');
+  if (startBtn) startBtn.addEventListener('click', () => startGame(document.getElementById('nickname').value.trim()));
+
+  // Options
+  document.querySelectorAll('.option-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const origIndex = parseInt(btn.dataset.orig);
+      selectOption(origIndex);
+    });
+  });
+
+  // Next
+  const nextBtn = document.getElementById('next-btn');
+  if (nextBtn) nextBtn.addEventListener('click', nextScenario);
+
+  // Results
+  const submitLb = document.getElementById('submit-lb');
+  if (submitLb) submitLb.addEventListener('click', () => {
+    saveScore(state.nickname, state.score);
+    setState({ screen: 'leaderboard' });
+  });
+  const viewLb = document.getElementById('view-lb');
+  if (viewLb) viewLb.addEventListener('click', () => setState({ screen: 'leaderboard' }));
+  const playAgain = document.getElementById('play-again');
+  if (playAgain) playAgain.addEventListener('click', () => {
+    Object.assign(state, { screen: 'welcome', scenarioIndex: 0, score: 0, nickname: '', answers: [], selectedOption: null });
+    render();
+  });
+
+  // Host
+  const hostReset = document.getElementById('host-reset');
+  if (hostReset) hostReset.addEventListener('click', () => {
+    if (confirm('Reset all scores?')) { localStorage.removeItem(LS_KEY); render(); }
+  });
+  const hostExport = document.getElementById('host-export');
+  if (hostExport) hostExport.addEventListener('click', exportCSV);
+  const hostRefresh = document.getElementById('host-refresh');
+  if (hostRefresh) hostRefresh.addEventListener('click', render);
+}
+
+function startGame(nickname) {
+  setState({ screen: 'scenario', scenarioIndex: 0, score: 0, nickname, answers: [] });
+}
+
+function selectOption(origIndex) {
+  const s = GAME_DATA.scenarios[state.scenarioIndex];
+  const chosen = s.options[origIndex];
+  const newScore = state.score + chosen.points;
+  const newAnswers = [...state.answers, { scenarioId: s.id, origIndex, points: chosen.points }];
+  setState({ selectedOption: origIndex, score: newScore, answers: newAnswers, screen: 'feedback' });
+}
+
+function nextScenario() {
+  const isLast = state.scenarioIndex >= GAME_DATA.scenarios.length - 1;
+  if (isLast) {
+    setState({ screen: 'results' });
+  } else {
+    setState({ screen: 'scenario', scenarioIndex: state.scenarioIndex + 1, selectedOption: null });
+  }
+}
+
+function exportCSV() {
+  const scores = getScores();
+  const rows = [['Rank','Nickname','Score','Max','Timestamp'],
+    ...scores.map((s,i) => [i+1, s.nickname, s.score, 12, s.timestamp])];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'which-lever-scores.csv';
+  a.click();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
